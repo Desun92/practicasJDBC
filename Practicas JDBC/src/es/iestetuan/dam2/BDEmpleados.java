@@ -15,9 +15,33 @@ public class BDEmpleados {
 		//modificarRegistroDepartamentos(60,60,"INFORMATICA Y COMUNICACIONES","MADRID");
 		//borrarRegistroDepartamentos(60);
 		//consultarDepartamentos(50);
-		Date fecha = new Date(2021-11-10);
-		crearRegistroEmpleados(8001,"JUSTO","PROG. MP",7782,fecha,1570f,null,50);
+		//Date fecha = new Date(1990-12-17);
+		//crearRegistroEmpleados(8020,"JUSTO","PROG. MP",7782,fecha,1570f,null,50);
+		//modificarRegistroEmpleados(7369,7369,"SÁNCHEZ","EMPLEADO",7902,fecha,1105f,0f,50);
+		borrarRegistroEmpleados(8020);
+		//consultarEmpleado('J',1300f);
 		
+		//getConexionPostgre();
+		
+	}
+	
+	public static Connection getConexionPostgre() {
+		Connection conexion = null;
+        try
+        {
+        	Class.forName("org.postgresql.Driver");
+        	String url = "jdbc:postgresql://dam2.actividad.cf:5432/aadd-dam2";
+            conexion = DriverManager.getConnection(url, "aadd", "d1m2p0sgr3sql");
+            if (conexion != null)            
+                System.out.println("Connected\n");           
+            else          
+                System.out.println("Not Connected");         
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+        }
+        return conexion;
 	}
 	
 	public static Connection getConexion() {
@@ -130,7 +154,7 @@ public class BDEmpleados {
 		
 		
 		try {
-			Connection conexion = getConexion();
+			Connection conexion = getConexionPostgre();
 			Statement statement = conexion.createStatement();
 			int op;
 			if(comision!=null)
@@ -148,5 +172,82 @@ public class BDEmpleados {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void modificarRegistroEmpleados(int pk, int emp, String ape, String ofi, int di, Date fecha, Float salar, Float comis, int dept) {
+		int cp = pk;
+		int emp_no = emp;
+		String apellido = ape;
+		String oficio = ofi;
+		int dir = di;
+		Date fecha_alt = fecha;
+		Float salario = salar;
+		Float comision = comis;
+		int dept_no = dept;
+		
+		
+		try {
+			Connection conexion = getConexion();
+			Statement statement = conexion.createStatement();
+			int op;
+			
+			op = statement.executeUpdate("update empleados set emp_no = '"+emp_no+"', apellido ='"+apellido+"', oficio ='"+oficio+"', dir ='"+dir+"', fecha_alt ='"+fecha_alt+"', salario ='"+salario+"', comision ='"+comision+"', dept_no ='"+dept_no+"' where emp_no = '"+cp+"'");
+			
+			if(op>0)
+				System.out.println("Inserción completada");
+			else
+				System.out.println("Error al insertar los datos");
+			conexion.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 
+	public static void borrarRegistroEmpleados(int pk) {
+		
+		int cp = pk;
+		
+		try {
+			Connection conexion = getConexionPostgre();
+			Statement statement = conexion.createStatement();
+			int op = statement.executeUpdate("delete from empleados where emp_no = '"+cp+"'");
+			if(op>0)
+				System.out.println("Borrado completado");
+			else
+				System.out.println("Error al borrar los datos");
+			conexion.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void consultarEmpleado(char ap, float salar) {
+		
+		char apellido = ap;
+		float salario = salar;
+		
+		try {
+			Connection conexion = getConexionPostgre();
+			Statement statement = conexion.createStatement();
+			ResultSet resultado = statement.executeQuery("select e.*, dnombre, loc from empleados e, departamentos d where d.dept_no = e.dept_no and salario > '"+salario+"' and apellido like '"+apellido+"%';");
+			while(resultado.next()) {
+				System.out.println("emp_no: "+resultado.getString(1));
+				System.out.println("apellido: "+resultado.getString(2));
+				System.out.println("oficio: "+resultado.getString(3));
+				System.out.println("dir: "+resultado.getString(4));
+				System.out.println("fecha_alt "+resultado.getString(5));
+				System.out.println("salario: "+resultado.getString(6));
+				System.out.println("comision: "+resultado.getString(7));
+				System.out.println("dept_no: "+resultado.getString(8));
+				System.out.println("dnombre: "+resultado.getString(9));
+				System.out.println("loc: "+resultado.getString(10));
+				System.out.println("------------------------------\n------------------------------");
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 }
