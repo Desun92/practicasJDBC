@@ -11,13 +11,12 @@ import es.iestetuan.dam2.VO.Departamento;
 
 public class GestionDepartamento implements IDepartamento {
 	
-	public static Connection getConexionPostgre() {
+	public static Connection getConexion() {
 		Connection conexion = null;
         try
         {
-        	Class.forName("org.postgresql.Driver");
-        	String url = "jdbc:postgresql://dam2.actividad.cf:5432/aadd-dam2";
-            conexion = DriverManager.getConnection(url, "aadd", "d1m2p0sgr3sql");
+        	Class.forName("org.mariadb.jdbc.Driver");
+            conexion = DriverManager.getConnection("jdbc:mariadb://localhost:3306/aadd", "aadd", "aadd");
             if (conexion != null)            
                 System.out.println("Connected\n");           
             else          
@@ -37,7 +36,7 @@ public class GestionDepartamento implements IDepartamento {
 		String localidad = departamento.getLocalidad();
 		
 		try {
-			Connection conexion = getConexionPostgre();
+			Connection conexion = getConexion();
 			String sentencia = "insert into departamentos values(?,?,?)";
 			PreparedStatement statement = conexion.prepareStatement(sentencia);
 			statement.setInt(1, dept_no);
@@ -52,21 +51,19 @@ public class GestionDepartamento implements IDepartamento {
 
 	}
 
-	public void modificarDepartamento(Departamento departamento, int pk) {
+	public void modificarDepartamento(Departamento departamento) {
 		
 		int dept_no = departamento.getNumero();
 		String dnombre = departamento.getNombre();
 		String localidad = departamento.getLocalidad();
-		int cp = pk;
 		
 		try {
-			Connection conexion = getConexionPostgre();
-			String sentencia = "update departamentos set dept_no = ?, dnombre = ?, loc = ? where dept_no = ?";
+			Connection conexion = getConexion();
+			String sentencia = "update departamentos set dnombre = ?, loc = ? where dept_no = ?";
 			PreparedStatement statement = conexion.prepareStatement(sentencia);
-			statement.setInt(1, dept_no);
-			statement.setString(2, dnombre);
-			statement.setString(3, localidad);
-			statement.setInt(4, cp);
+			statement.setString(1, dnombre);
+			statement.setString(2, localidad);
+			statement.setInt(3, dept_no);
 			statement.executeUpdate();
 			conexion.close();
 		}
@@ -79,7 +76,7 @@ public class GestionDepartamento implements IDepartamento {
 	public void borrarDepartamento(int idDepartamento) {
 		
 		try {
-			Connection conexion = getConexionPostgre();
+			Connection conexion = getConexion();
 			String sentencia = "delete from departamentos where dept_no = ?";
 			PreparedStatement statement = conexion.prepareStatement(sentencia);
 			statement.setInt(1, idDepartamento);
@@ -95,7 +92,7 @@ public class GestionDepartamento implements IDepartamento {
 	public void consultarDepartamento(int idDepartamento) {
 		
 		try {
-			Connection conexion = getConexionPostgre();
+			Connection conexion = getConexion();
 			String sentencia = "select * from departamentos where dept_no = ?";
 			PreparedStatement statement = conexion.prepareStatement(sentencia);
 			statement.setInt(1, idDepartamento);

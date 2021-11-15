@@ -14,14 +14,14 @@ public class BDEmpleados {
 	public static void main(String[] args) {
 		
 		
-		Departamento departamento = new Departamento(100,"PRUEBA2","MADRID");
+		Departamento departamento = new Departamento(100,"PRUEBA3","MADRID");
 		Date fecha = new Date(2021/11/14);
 		Empleado empleado = new Empleado(8003,"VAZQUEZ","ANALISTA",7780,fecha,2000f,0f,10);
 		IDepartamento gestion = new GestionDepartamento();
 		IEmpleado gestionEmple = new GestionEmpleado();
 		
 		//gestion.crearDepartamento(departamento);
-		//gestion.modificarDepartamento(departamento,60);
+		//gestion.modificarDepartamento(departamento);
 		//gestion.borrarDepartamento(100);
 		//gestion.consultarDepartamento(10);
 		
@@ -30,7 +30,8 @@ public class BDEmpleados {
 		//gestionEmple.crearEmpleado(empleado);
 		//gestionEmple.modificarEmpleado(empleado, 8003);
 		//gestionEmple.borrarEmpleado(8003);
-		gestionEmple.consultarEmpleado(7902);
+		//gestionEmple.consultarEmpleado(8001);
+		//gestionEmple.consultarEmpleadoApellidoSalario("J",1500f);
 	}
 	
 }
